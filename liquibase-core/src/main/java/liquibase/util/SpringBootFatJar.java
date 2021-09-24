@@ -1,5 +1,8 @@
 package liquibase.util;
 
+/**
+ * @deprecated
+ */
 public class SpringBootFatJar {
 
     public static String getPathForResource(String path) {
