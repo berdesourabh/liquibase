@@ -44,7 +44,7 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            await github.repos.createCommitStatus.create({
+            await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase-pro",
               "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
@@ -231,7 +231,7 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            await github.repos.createCommitStatus.create({
+            await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase-pro",
               "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
