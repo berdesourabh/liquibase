@@ -47,7 +47,7 @@ jobs:
             await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase-pro",
-              "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
+              "sha": "${{ steps.find-branches.outputs.proBranchName }}",
               "state": "pending",
               "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
               "context": "Liquibase Core Build"
@@ -232,6 +232,8 @@ jobs:
           script: |
             let result = "success";
 
+            console.log("Checking jobs...");
+            console.log(context.needs);
             for (const job in context.needs) {
               console.log("Job "+job+" result is "+context.needs[job].result);
               if (context.needs[job].result != 'success') {
@@ -242,7 +244,7 @@ jobs:
             await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase-pro",
-              "sha": "${{ needs.setup.outputs.proBranchSha }}",
+              "sha": "${{ needs.setup.outputs.proBranchName }}",
               "state": "${{ job.status }}",
               "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
               "context": "Liquibase Core Build"
