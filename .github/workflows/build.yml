@@ -1,10 +1,11 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Build and Test
 
 ## Temporarily moved to pull_request so branch builds from this
-on: [ pull_request ]
+pull_request:
+  types:
+    - opened
+    - reopened
+    - synchronize
 
 jobs:
   build:
@@ -186,17 +187,17 @@ jobs:
             liquibase-maven-plugin/target/liquibase-maven-plugin-0-SNAPSHOT.jar
             liquibase-cdi/target/liquibase-cdi-0-SNAPSHOT.jar
 
-#      - name: Create Check
-#        id: create-check
-#        uses: actions/github-script@v4
-#        if: always()
-#        with:
-#          script: |
-#            await github.checks.create({
-#              "owner": "datical",
-#              "repo": "liquibase-pro",
-#              "name": "Liquibase Core Build",
-#              "head_sha": "${{ github.sha }}",
-#              "status": "${{ job.status }}",
-#              "details_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
-#            });
+      - name: Create Liquibase-Pro Check
+        id: create-check
+        uses: actions/github-script@v4
+        if: steps.find-branches.outputs.standAlonePR == "false"
+        with:
+          script: |
+            await github.checks.create({
+              "owner": "liquibase",
+              "repo": "liquibase-pro",
+              "name": "Liquibase Core Build",
+              "head_sha": "${{ github.sha }}",
+              "status": "${{ job.status }}",
+              "details_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
+            });
