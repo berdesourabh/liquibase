@@ -38,20 +38,21 @@ jobs:
             core.setOutput("proRunStatus", branch.runStatus);
             core.setOutput("proConclusion", branch.runConclusion);
 
-#      - name: Update Liquibase-Pro Check
-#        uses: actions/github-script@v4
-#        if: ${{ steps.find-branches.outputs.standAlonePR == 'false' }}
-#        with:
-#          github-token: ${{ secrets.BOT_TOKEN }}
-#          script: |
-#            await github.checks.create({
-#              "owner": "liquibase",
-#              "repo": "liquibase-pro",
-#              "name": "Liquibase Core Build",
-#              "head_sha": "${{ github.sha }}",
-#              "status": "${{ job.status }}",
-#              "details_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
-#            });
+      - name: Update Liquibase-Pro Status
+        uses: actions/github-script@v4
+        if: ${{ steps.find-branches.outputs.standAlonePR == 'false' }}
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            await github.repos.createCommitStatus.create({
+              "owner": "liquibase",
+              "repo": "liquibase-pro",
+              "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
+              "state": "${{ job.status }}",
+              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
+              "description": "Liquibase Core Build",
+              "context": "liquibase-build"
+            });
 
   build:
     name: Build & Test (Java ${{ matrix.java }})
@@ -204,7 +205,7 @@ jobs:
           export INSTALL4J_CACHE=$HOME/.install4j8
           wget -nv --directory-prefix=$INSTALL4J_CACHE -nc https://download-gcdn.ej-technologies.com/install4j/install4j_linux_8_0_11.deb
           sudo apt install -y $INSTALL4J_CACHE/install4j_linux_8_0_11.deb
-          (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT
+          (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT)
 
       - name: Archive Packages
         uses: actions/upload-artifact@v2
@@ -218,23 +219,24 @@ jobs:
             liquibase-maven-plugin/target/liquibase-maven-plugin-0-SNAPSHOT.jar
             liquibase-cdi/target/liquibase-cdi-0-SNAPSHOT.jar
 
-#  finish:
-#    name: Finish Build
-#    runs-on: ubuntu-latest
-#    needs: [ setup, build, integration-test, package ]
-#    if: always()
-#    steps:
-#      - name: Update Liquibase-Pro Check
-#        uses: actions/github-script@v4
-#        if: ${{ needs.setup.outputs.standAlonePR == 'false' }}
-#        with:
-#          github-token: ${{ secrets.BOT_TOKEN }}
-#          script: |
-#            await github.checks.create({
-#              "owner": "liquibase",
-#              "repo": "liquibase-pro",
-#              "name": "Liquibase Core Build",
-#              "head_sha": "${{ github.sha }}",
-#              "status": "${{ job.status }}",
-#              "details_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
-#            });
+  finish:
+    name: Finish Build
+    runs-on: ubuntu-latest
+    needs: [ setup, build, integration-test, package ]
+    if: always()
+    steps:
+      - name: Update Liquibase-Pro Check
+        uses: actions/github-script@v4
+        if: ${{ needs.setup.outputs.standAlonePR == 'false' }}
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            await github.repos.createCommitStatus.create({
+              "owner": "liquibase",
+              "repo": "liquibase-pro",
+              "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
+              "state": "${{ job.status }}",
+              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
+              "description": "Liquibase Core Build",
+              "context": "liquibase-build"
+            });
