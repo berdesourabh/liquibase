@@ -13,12 +13,12 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     outputs:
-      proBranchName: steps.find-branches.outputs.proBranchName
-      proBranchSha: steps.find-branches.outputs.proBranchSha
-      standAlonePR: steps.find-branches.outputs.standAlonePR
-      proState: steps.find-branches.outputs.proState
-      proRunStatus: steps.find-branches.outputs.proRunStatus
-      proConclusion: steps.find-branches.outputs.proConclusion
+      proBranchName: ${{ steps.find-branches.outputs.proBranchName }}
+      proBranchSha: ${{ steps.find-branches.outputs.proBranchSha }}
+      standAlonePR: ${{ steps.find-branches.outputs.standAlonePR }}
+      proState: ${{ steps.find-branches.outputs.proState }}
+      proRunStatus: ${{ steps.find-branches.outputs.proRunStatus }}
+      proConclusion: ${{ steps.find-branches.outputs.proConclusion }}
     steps:
       - uses: actions/checkout@v2
 
