@@ -119,6 +119,11 @@ jobs:
         with:
           key: built-code-${{ github.sha }}
           path: ./**/target
+      - name: Install4j Cache
+        uses: actions/cache@v2
+        with:
+          key: install4j8-
+          path: ~/.install4j
 
       - name: Set up JDK 8
         uses: actions/setup-java@v2
@@ -161,6 +166,15 @@ jobs:
       - name: Build Final Jar & Tar/Zips
         run: mvn -B -pl liquibase-dist -P liquibase-pro package
 
+      -name: Build Install4J installers
+       run: |
+         mkdir -p ~/.install4j8
+         export INSTALL4J_CACHE=$HOME/.install4j8
+         wget -nv --directory-prefix=$INSTALL4J_CACHE -nc https://download-gcdn.ej-technologies.com/install4j/install4j_linux_8_0_11.deb
+         sudo apt install -y $INSTALL4J_CACHE/install4j_linux_8_0_11.deb
+         (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT
+
+
       - name: Archive Packages
         uses: actions/upload-artifact@v2
         with:
@@ -169,6 +183,7 @@ jobs:
             liquibase-dist/target/liquibase-0-SNAPSHOT.tar.gz
             liquibase-dist/target/liquibase-0-SNAPSHOT.zip
             liquibase-dist/target/liquibase-0-SNAPSHOT.jar
+            liquibase-dist/target/liquibase-*-installer-*
             liquibase-maven-plugin/target/liquibase-maven-plugin-0-SNAPSHOT.jar
             liquibase-cdi/target/liquibase-cdi-0-SNAPSHOT.jar
 
