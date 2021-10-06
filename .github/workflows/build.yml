@@ -174,7 +174,6 @@ jobs:
           sudo apt install -y $INSTALL4J_CACHE/install4j_linux_8_0_11.deb
           (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT
 
-
       - name: Archive Packages
         uses: actions/upload-artifact@v2
         with:
