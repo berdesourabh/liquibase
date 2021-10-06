@@ -50,7 +50,6 @@ jobs:
               "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
               "state": "pending",
               "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
-              "description": "Liquibase Core Build",
               "context": "Liquibase Core Build"
             });
 
@@ -231,12 +230,20 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
+            let result = "success";
+
+            for (const job in context.needs) {
+              console.log("Job "+job+" result is "+context.needs[job].result);
+              if (context.needs[job].result != 'success') {
+                result = "falure";
+              }
+            }
+
             await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase-pro",
               "sha": "${{ needs.setup.outputs.proBranchSha }}",
               "state": "${{ job.status }}",
               "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
-              "description": "Liquibase Core Build",
-              "context": "liquibase-build"
+              "context": "Liquibase Core Build"
             });
