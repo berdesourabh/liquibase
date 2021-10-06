@@ -151,6 +151,8 @@ jobs:
     name: Build Artifacts
     runs-on: ubuntu-latest
     needs: [ setup, build ]
+    env:
+      INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
     steps:
       - uses: actions/checkout@v2
 
