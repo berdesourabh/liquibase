@@ -191,7 +191,7 @@ jobs:
       - name: Create Liquibase-Pro Check
         id: create-check
         uses: actions/github-script@v4
-        if: steps.find-branches.outputs.standAlonePR == "false"
+        if: ${{ steps.find-branches.outputs.standAlonePR == "false" }}
         with:
           script: |
             await github.checks.create({
