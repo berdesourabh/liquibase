@@ -48,10 +48,10 @@ jobs:
               "owner": "liquibase",
               "repo": "liquibase-pro",
               "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
-              "state": "${{ job.status }}",
+              "state": "pending",
               "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
               "description": "Liquibase Core Build",
-              "context": "liquibase-build"
+              "context": "Liquibase Core Build"
             });
 
   build:
@@ -234,7 +234,7 @@ jobs:
             await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase-pro",
-              "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
+              "sha": "${{ needs.setup.outputs.proBranchSha }}",
               "state": "${{ job.status }}",
               "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
               "description": "Liquibase Core Build",
