@@ -166,13 +166,13 @@ jobs:
       - name: Build Final Jar & Tar/Zips
         run: mvn -B -pl liquibase-dist -P liquibase-pro package
 
-      -name: Build Install4J installers
-       run: |
-         mkdir -p ~/.install4j8
-         export INSTALL4J_CACHE=$HOME/.install4j8
-         wget -nv --directory-prefix=$INSTALL4J_CACHE -nc https://download-gcdn.ej-technologies.com/install4j/install4j_linux_8_0_11.deb
-         sudo apt install -y $INSTALL4J_CACHE/install4j_linux_8_0_11.deb
-         (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT
+      - name: Build Install4J installers
+        run: |
+          mkdir -p ~/.install4j8
+          export INSTALL4J_CACHE=$HOME/.install4j8
+          wget -nv --directory-prefix=$INSTALL4J_CACHE -nc https://download-gcdn.ej-technologies.com/install4j/install4j_linux_8_0_11.deb
+          sudo apt install -y $INSTALL4J_CACHE/install4j_linux_8_0_11.deb
+          (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT
 
 
       - name: Archive Packages
