@@ -49,7 +49,7 @@ jobs:
               "repo": "liquibase-pro",
               "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
               "state": "${{ job.status }}",
-              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
+              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
               "description": "Liquibase Core Build",
               "context": "liquibase-build"
             });
@@ -236,7 +236,7 @@ jobs:
               "repo": "liquibase-pro",
               "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
               "state": "${{ job.status }}",
-              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}"
+              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
               "description": "Liquibase Core Build",
               "context": "liquibase-build"
             });
