@@ -20,6 +20,8 @@ jobs:
       proRunStatus: steps.find-branches.outputs.proRunStatus
       proConclusion: steps.find-branches.outputs.proConclusion
     steps:
+      - uses: actions/checkout@v2
+
       - name: Find corresponding branches
         id: find-branches
         uses: actions/github-script@v4
