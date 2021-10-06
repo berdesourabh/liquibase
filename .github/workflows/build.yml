@@ -42,6 +42,7 @@ jobs:
         uses: actions/github-script@v4
         if: ${{ steps.find-branches.outputs.standAlonePR == 'false' }}
         with:
+          github-token: ${{ secrets.BOT_TOKEN }}
           script: |
             await github.checks.create({
               "owner": "liquibase",
@@ -227,6 +228,7 @@ jobs:
         uses: actions/github-script@v4
         if: ${{ needs.setup.outputs.standAlonePR == 'false' }}
         with:
+          github-token: ${{ secrets.BOT_TOKEN }}
           script: |
             await github.checks.create({
               "owner": "liquibase",
