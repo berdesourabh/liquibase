@@ -208,6 +208,18 @@ jobs:
           sudo apt install -y $INSTALL4J_CACHE/install4j_linux_8_0_11.deb
           (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT)
 
+      - name: Sign Files
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
+          distribution: 'adopt'
+          gpg-private-key: ${{ secrets.GPG_SECRET }}
+          gpg-passphrase: GPG_PASSPHRASE
+        env:
+          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+        run: |
+          (cd liquibase-dist && src/main/package/sign-artifacts.sh)
+
       - name: Archive Packages
         uses: actions/upload-artifact@v2
         with:
@@ -217,6 +229,9 @@ jobs:
             liquibase-dist/target/liquibase-0-SNAPSHOT.zip
             liquibase-dist/target/liquibase-0-SNAPSHOT.jar
             liquibase-dist/target/liquibase-*-installer-*
+            liquibase-dist/target/*.asc
+            liquibase-dist/target/*.md5
+            liquibase-dist/target/*.sh1
             liquibase-maven-plugin/target/liquibase-maven-plugin-0-SNAPSHOT.jar
             liquibase-cdi/target/liquibase-cdi-0-SNAPSHOT.jar
 
