@@ -70,10 +70,11 @@ module.exports = ({github, context}) => {
 
                         let run = runs.data.workflow_runs[0];
 
+                        returnData.workflowId = run.id;
                         returnData.runNumber = run.run_number;
                         returnData.runStatus = run.status;
                         returnData.runConclusion = run.conclusion;
-                        returnData.runHtmlUrl = run.htmlUrl;
+                        returnData.runHtmlUrl = run.html_url;
                     }
 
 
