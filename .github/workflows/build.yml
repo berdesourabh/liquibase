@@ -151,8 +151,6 @@ jobs:
     name: Build Artifacts
     runs-on: ubuntu-latest
     needs: [ setup, build ]
-    env:
-      INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
     steps:
       - uses: actions/checkout@v2
 
@@ -205,6 +203,8 @@ jobs:
         run: mvn -B -pl liquibase-dist -P liquibase-pro package
 
       - name: Build Install4J installers
+        env:
+          INSTALL4J_LICENSE: ${{ secrets.INSTALL4J_LICENSE }}
         run: |
           mkdir -p ~/.install4j8
           export INSTALL4J_CACHE=$HOME/.install4j8
@@ -213,6 +213,8 @@ jobs:
           (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT)
 
       - name: Sign Files
+        env:
+          GPG_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           (cd liquibase-dist && src/main/package/sign-artifacts.sh)
 
