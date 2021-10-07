@@ -236,7 +236,7 @@ jobs:
             await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase",
-              "sha": "${{ git.sha }}",
+              "sha": "${{ github.sha }}",
               "state": proStatus,
               "target_url": currentBranchInfo.runUrl,
               "context": "Include Latest Pro Code"
