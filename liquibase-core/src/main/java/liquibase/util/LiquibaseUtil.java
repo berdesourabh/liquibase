@@ -4,6 +4,8 @@ import liquibase.Scope;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Properties;
 
 public class LiquibaseUtil {
@@ -30,7 +32,7 @@ public class LiquibaseUtil {
                 version = "[Core: " + getBuildInfo("build.branch") + "/" + getBuildInfo("build.number") + "/" + buildCommit.substring(0, 6) + "/" + getBuildInfo("build.timestamp");
 
                 if (getBuildInfo("build.pro.number") != null) {
-                    version +=", Pro: " + getBuildInfo("build.pro.branch") + "/" + getBuildInfo("build.pro.number") + "/" + getBuildInfo("build.pro.commit").substring(0, 6) + "/" + getBuildInfo("build.pro.timestamp");
+                    version += ", Pro: " + getBuildInfo("build.pro.branch") + "/" + getBuildInfo("build.pro.number") + "/" + getBuildInfo("build.pro.commit").substring(0, 6) + "/" + getBuildInfo("build.pro.timestamp");
                 }
 
                 version += "]";
@@ -51,20 +53,27 @@ public class LiquibaseUtil {
     // will extract the information from liquibase.build.properties, which should be a properties file in
     // the jar file.
     private static String getBuildInfo(String propertyId) {
-        String value = "UNKNOWN";
         if (liquibaseBuildProperties == null) {
-            try (InputStream buildProperties = Scope.getCurrentScope().getClassLoader().getResourceAsStream("liquibase.build.properties")) {
+            try {
                 liquibaseBuildProperties = new Properties();
-                if (buildProperties != null) {
-                    liquibaseBuildProperties.load(buildProperties);
+                final Enumeration<URL> propertiesUrls = Scope.getCurrentScope().getClassLoader().getResources("liquibase.build.properties");
+                while (propertiesUrls.hasMoreElements()) {
+                    final URL url = propertiesUrls.nextElement();
+                    try (InputStream buildProperties = url.openStream()) {
+                        if (buildProperties != null) {
+                            liquibaseBuildProperties.load(buildProperties);
+                        }
+                    }
                 }
             } catch (IOException e) {
                 Scope.getCurrentScope().getLog(LiquibaseUtil.class).severe("Cannot read liquibase.build.properties", e);
             }
         }
 
-        if (liquibaseBuildProperties != null) {
-            value = liquibaseBuildProperties.getProperty(propertyId);
+        String value = "UNKNOWN";
+        value = liquibaseBuildProperties.getProperty(propertyId);
+        if (value == null) {
+            value = "UNKNOWN";
         }
         return value;
     }
