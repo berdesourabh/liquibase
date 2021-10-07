@@ -227,6 +227,7 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
+            const helper = require('./.github/util/workflow-helper.js')({github, context});
             let currentBranchInfo = await helper.findMatchingBranch("liquibase", "liquibase-pro");
 
             let proStatus = "failure"
