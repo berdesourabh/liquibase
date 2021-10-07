@@ -213,6 +213,7 @@ jobs:
           (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT)
 
       - name: Sign Files
+        run: |
           (cd liquibase-dist && src/main/package/sign-artifacts.sh)
 
       - name: Archive Packages
