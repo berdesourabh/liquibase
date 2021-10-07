@@ -31,7 +31,7 @@ public class LiquibaseUtil {
             } else {
                 version = "[Core: " + getBuildInfo("build.branch") + "/" + getBuildInfo("build.number") + "/" + buildCommit.substring(0, 6) + "/" + getBuildInfo("build.timestamp");
 
-                if (getBuildInfo("build.pro.number") != null) {
+                if (!getBuildInfo("build.pro.number").equals("UNKNOWN")) {
                     version += ", Pro: " + getBuildInfo("build.pro.branch") + "/" + getBuildInfo("build.pro.number") + "/" + getBuildInfo("build.pro.commit").substring(0, 6) + "/" + getBuildInfo("build.pro.timestamp");
                 }
 
