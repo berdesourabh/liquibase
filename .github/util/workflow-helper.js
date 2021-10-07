@@ -73,7 +73,7 @@ module.exports = ({github, context}) => {
                         returnData.runNumber = run.run_number;
                         returnData.runStatus = run.status;
                         returnData.runConclusion = run.conclusion;
-                        returnData.runUrl = run.url;
+                        returnData.runHtmlUrl = run.htmlUrl;
                     }
 
 

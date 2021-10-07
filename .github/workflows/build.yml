@@ -241,7 +241,7 @@ jobs:
               "repo": "liquibase",
               "sha": "${{ github.event.pull_request.head.sha }}",
               "state": proStatus,
-              "target_url": currentBranchInfo.runUrl,
+              "target_url": currentBranchInfo.runHtmlUrl,
               "context": "Include Latest Pro Code"
             });
             console.log(response);
