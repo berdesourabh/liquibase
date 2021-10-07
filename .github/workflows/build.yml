@@ -236,7 +236,7 @@ jobs:
             if (currentBranchInfo.runConclusion == "success") {
               proStatus = "success";
             }
-            await github.repos.createCommitStatus({
+            let response = await github.repos.createCommitStatus({
               "owner": "liquibase",
               "repo": "liquibase",
               "sha": "${{ github.sha }}",
@@ -244,3 +244,4 @@ jobs:
               "target_url": currentBranchInfo.runUrl,
               "context": "Include Latest Pro Code"
             });
+            console.log(response);
