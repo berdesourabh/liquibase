@@ -221,6 +221,8 @@ jobs:
     needs: [ setup, build, integration-test, package ]
     if: always()
     steps:
+      - uses: actions/checkout@v2
+
       - name: Update Liquibase-Pro Check
         uses: actions/github-script@v4
         if: ${{ needs.setup.outputs.standAlonePR == 'false' }}
