@@ -179,6 +179,10 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
+          gpg-private-key: ${{ secrets.GPG_SECRET }}
+          gpg-passphrase: GPG_PASSPHRASE
+        env:
+          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
 
       - name: Download liquibase-pro
         uses: dawidd6/action-download-artifact@v2
@@ -209,15 +213,6 @@ jobs:
           (cd liquibase-dist && src/main/package/package-install4j.sh 0-SNAPSHOT)
 
       - name: Sign Files
-        uses: actions/setup-java@v2
-        with:
-          java-version: 8
-          distribution: 'adopt'
-          gpg-private-key: ${{ secrets.GPG_SECRET }}
-          gpg-passphrase: GPG_PASSPHRASE
-        env:
-          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-        run: |
           (cd liquibase-dist && src/main/package/sign-artifacts.sh)
 
       - name: Archive Packages
