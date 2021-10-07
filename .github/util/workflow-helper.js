@@ -10,6 +10,10 @@ module.exports = ({github, context}) => {
         },
 
         findMatchingBranch: async function (owner, repo, branchesToCheck) {
+            if (!branchesToCheck) {
+                branchesToCheck = [context.payload.pull_request.head.ref, context.payload.pull_request.base.ref, "main", "master"]
+            }
+
             for (let branchName of branchesToCheck) {
                 if (!branchName) {
                     console.log("Skipping empty branch name: " + branchName);

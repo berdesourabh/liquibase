@@ -30,28 +30,13 @@ jobs:
           script: |
             const helper = require('./.github/util/workflow-helper.js')({github, context});
 
-            let branch = await helper.findMatchingBranch("datical", "liquibase-pro", [context.payload.pull_request.head.ref, context.payload.pull_request.base.ref, "main", "master"]);
+            let branch = await helper.findMatchingBranch("liquibase", "liquibase-pro");
             core.setOutput("proBranchName", branch.name);
             core.setOutput("proBranchSha", branch.sha);
             core.setOutput("standAlonePR", helper.getCurrentBranch() !== branch.name);
             core.setOutput("proState", branch.pullRequestState);
             core.setOutput("proRunStatus", branch.runStatus);
             core.setOutput("proConclusion", branch.runConclusion);
-
-      - name: Update Liquibase-Pro Status
-        uses: actions/github-script@v4
-        if: ${{ steps.find-branches.outputs.standAlonePR == 'false' }}
-        with:
-          github-token: ${{ secrets.BOT_TOKEN }}
-          script: |
-            await github.repos.createCommitStatus({
-              "owner": "liquibase",
-              "repo": "liquibase-pro",
-              "sha": "${{ steps.find-branches.outputs.proBranchSha }}",
-              "state": "pending",
-              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
-              "context": "Liquibase Core Build"
-            });
 
   build:
     name: Build & Test (Java ${{ matrix.java }})
@@ -223,13 +208,10 @@ jobs:
         with:
           name: liquibase-artifacts
           path: |
-            liquibase-dist/target/liquibase-0-SNAPSHOT.tar.gz
-            liquibase-dist/target/liquibase-0-SNAPSHOT.zip
-            liquibase-dist/target/liquibase-0-SNAPSHOT.jar
+            liquibase-dist/target/liquibase-0-SNAPSHOT.tar.gz*
+            liquibase-dist/target/liquibase-0-SNAPSHOT.zip*
+            liquibase-dist/target/liquibase-0-SNAPSHOT.jar*
             liquibase-dist/target/liquibase-*-installer-*
-            liquibase-dist/target/*.asc
-            liquibase-dist/target/*.md5
-            liquibase-dist/target/*.sh1
             liquibase-maven-plugin/target/liquibase-maven-plugin-0-SNAPSHOT.jar
             liquibase-cdi/target/liquibase-cdi-0-SNAPSHOT.jar
 
@@ -245,22 +227,17 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            let result = "success";
+            let currentBranchInfo = await helper.findMatchingBranch("liquibase", "liquibase-pro");
 
-            console.log("Checking jobs...");
-            console.log(context.needs);
-            for (const job in context.needs) {
-              console.log("Job "+job+" result is "+context.needs[job].result);
-              if (context.needs[job].result != 'success') {
-                result = "falure";
-              }
+            let proStatus = "failure"
+            if (currentBranchInfo.runConclusion == "success") {
+              proStatus = "success";
             }
-
             await github.repos.createCommitStatus({
               "owner": "liquibase",
-              "repo": "liquibase-pro",
-              "sha": "${{ needs.setup.outputs.proBranchSha }}",
-              "state": "${{ job.status }}",
-              "target_url": "https://github.com/liquibase/liquibase/actions/runs/${{ github.run_id }}",
-              "context": "Liquibase Core Build"
+              "repo": "liquibase",
+              "sha": "${{ git.sha }}",
+              "state": proStatus,
+              "target_url": currentBranchInfo.runUrl,
+              "context": "Include Latest Pro Code"
             });
